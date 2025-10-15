@@ -1,5 +1,3 @@
---- START OF FILE styles.css ---
-
 /* Estilos do Site de Pedidos */
 :root {
     --primary-color: #004d99;
@@ -10,66 +8,60 @@
     --danger-color: #dc3545;
     --success-color: #28a745;
     --warning-color: #ffc107;
-    --hover-primary: #003366; /* Nova variável para hover */
-    --focus-shadow: rgba(0, 77, 153, 0.4); /* Nova variável para sombra de foco */
 }
 
-/* Importação de fonte Inter do Google Fonts com font-display: swap */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--secondary-color);
     color: var(--text-color);
     margin: 0;
-    padding: 1.25rem; /* 20px convertido para rem */
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     position: relative;
-    font-size: 16px; /* Tamanho base para facilitar rem */
 }
 
 .container {
     background-color: var(--card-bg);
-    padding: 1.875rem; /* 30px convertido para rem */
-    border-radius: 0.75rem; /* 12px convertido para rem */
-    box-shadow: 0 0.5rem 1.5625rem rgba(0, 0, 0, 0.1); /* 8px 25px convertido para rem */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 34.375rem; /* 550px convertido para rem */
+    max-width: 550px;
 }
 
 .header-content {
     text-align: center;
-    margin-bottom: 1.875rem; /* 30px convertido para rem */
+    margin-bottom: 30px;
 }
 .header-logo {
-    max-width: 11.25rem; /* 180px convertido para rem */
+    max-width: 180px;
     height: auto;
-    margin-bottom: 0.625rem; /* 10px convertido para rem */
+    margin-bottom: 10px;
 }
 
 h1 {
     color: var(--primary-color);
-    font-size: 1.75rem; /* 28px convertido para rem */
+    font-size: 28px;
     margin: 0;
 }
 
 p.subtitle {
-    font-size: 1rem; /* 16px - mantido em rem relativo ao body */
+    font-size: 16px;
     color: #777;
-    margin-top: 0.3125rem; /* 5px convertido para rem */
+    margin-top: 5px;
 }
 
 .form-group {
-    margin-bottom: 1.25rem; /* 20px convertido para rem */
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem; /* 8px convertido para rem */
+    margin-bottom: 8px;
     color: var(--primary-color);
 }
 
@@ -77,32 +69,32 @@ input[type="text"],
 textarea,
 select {
     width: 100%;
-    padding: 0.75rem; /* 12px convertido para rem */
+    padding: 12px;
     border: 1px solid var(--border-color);
-    border-radius: 0.5rem; /* 8px convertido para rem */
+    border-radius: 8px;
     box-sizing: border-box;
-    font-size: 1rem; /* 16px - mantido em rem relativo ao body */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Adicionado transição para box-shadow */
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 input[type="text"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-shadow); /* Sombra de foco mais pronunciada e com variável */
+    box-shadow: 0 0 0 2px rgba(0, 77, 153, 0.2);
 }
 
 .radio-options, .checkbox-options {
     display: flex;
-    gap: 1.25rem; /* 20px convertido para rem */
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .radio-options label, .checkbox-options label {
-    font-weight: normal; /* Sobrescreve o estilo base de label */
+    font-weight: normal;
     display: flex;
     align-items: center;
-    gap: 0.3125rem; /* 5px convertido para rem */
+    gap: 5px;
     cursor: pointer;
     color: var(--text-color);
 }
@@ -114,12 +106,12 @@ select:focus {
 .btn-submit {
     display: block;
     width: 100%;
-    padding: 0.9375rem; /* 15px convertido para rem */
+    padding: 15px;
     background-color: var(--success-color);
     color: #fff;
     border: none;
-    border-radius: 0.5rem; /* 8px convertido para rem */
-    font-size: 1.125rem; /* 18px convertido para rem */
+    border-radius: 8px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -135,35 +127,35 @@ select:focus {
 .option-btn {
     display: block;
     width: 100%;
-    padding: 0.9375rem; /* 15px convertido para rem */
+    padding: 15px;
     background-color: var(--primary-color);
     color: #fff;
     border: none;
-    border-radius: 0.5rem; /* 8px convertido para rem */
-    font-size: 1rem; /* 16px - mantido em rem relativo ao body */
+    border-radius: 8px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease;
     text-align: center;
-    margin-bottom: 0.625rem; /* 10px convertido para rem */
+    margin-bottom: 10px;
 }
 .option-btn:hover {
-    background-color: var(--hover-primary); /* Usando variável */
-    transform: translateY(-0.125rem); /* 2px convertido para rem */
+    background-color: #003366;
+    transform: translateY(-2px);
 }
 
 .location-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem; /* 10px convertido para rem */
-    margin-top: 0.625rem; /* 10px convertido para rem */
+    gap: 10px;
+    margin-top: 10px;
 }
 .location-controls button {
-    padding: 0.75rem; /* 12px convertido para rem */
+    padding: 12px;
     background-color: #f0f2f5;
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    border-radius: 0.5rem; /* 8px convertido para rem */
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -175,18 +167,18 @@ select:focus {
 .audio-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem; /* 10px convertido para rem */
-    margin-top: 0.625rem; /* 10px convertido para rem */
+    gap: 10px;
+    margin-top: 10px;
     align-items: flex-start;
 }
 .audio-controls-row {
     display: flex;
-    gap: 0.625rem; /* 10px convertido para rem */
+    gap: 10px;
     width: 100%;
 }
 .audio-controls button {
-    padding: 0.625rem 0.9375rem; /* 10px 15px convertido para rem */
-    border-radius: 0.5rem; /* 8px convertido para rem */
+    padding: 10px 15px;
+    border-radius: 8px;
     border: none;
     font-weight: bold;
     cursor: pointer;
@@ -194,53 +186,32 @@ select:focus {
 }
 #recordButton { background-color: var(--danger-color); color: white; border: none; }
 #stopButton { background-color: var(--warning-color); color: #333; border: none;}
-#deleteButton { background-color: transparent; color: var(--danger-color); border: 1px solid var(--danger-color); } /* Adicionado borda para consistência visual */
-.audio-player-container { margin-top: 0.625rem; /* 10px convertido para rem */ }
+#deleteButton { background-color: transparent; color: var(--danger-color); border-color: var(--danger-color); }
+.audio-player-container { margin-top: 10px; }
 
 #confirmationMessage {
     text-align: center;
     font-weight: bold;
-    margin-top: 1.25rem; /* 20px convertido para rem */
-    padding: 0.9375rem; /* 15px convertido para rem */
-    border-radius: 0.5rem; /* 8px convertido para rem */
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
 }
 .success { background-color: #e6f7ee; color: var(--success-color); }
 .error { background-color: #fcebeb; color: var(--danger-color); }
 .helpcode-logo-small {
     position: absolute;
-    bottom: 1.25rem; /* 20px convertido para rem */
-    right: 1.25rem; /* 20px convertido para rem */
-    max-width: 5rem; /* 80px convertido para rem */
+    bottom: 20px;
+    right: 20px;
+    max-width: 80px;
     opacity: 0.6;
 }
 .back-btn {
-    padding: 0.625rem 0.9375rem; /* 10px 15px convertido para rem */
+    padding: 10px 15px;
     border: none;
-    border-radius: 0.5rem; /* 8px convertido para rem */
+    border-radius: 8px;
     background-color: #666;
     color: #fff;
     cursor: pointer;
-    margin-bottom: 1.25rem; /* 20px convertido para rem */
+    margin-bottom: 20px;
 }
 .back-btn:hover { background-color: #555; }
-
-/* Media Queries para Responsividade */
-@media (max-width: 600px) {
-    body {
-        padding: 0.9375rem; /* 15px convertido para rem */
-    }
-    .container {
-        padding: 1.25rem; /* 20px convertido para rem */
-        box-shadow: none; /* Remover sombra em telas menores para visual mais limpo */
-    }
-    h1 {
-        font-size: 1.5rem; /* Ajuste para telas menores */
-    }
-    .radio-options, .checkbox-options {
-        flex-direction: column; /* Opções em coluna em telas pequenas */
-        gap: 0.625rem; /* 10px convertido para rem */
-    }
-    .header-logo {
-        max-width: 9.375rem; /* 150px para telas menores */
-    }
-}
