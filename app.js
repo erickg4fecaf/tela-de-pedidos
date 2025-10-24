@@ -1,8 +1,3 @@
-Com certeza\! Vou fornecer o código completo do `tela de chamados help/app.js` com a correção específica no envio do campo "Tipo de Apoio", usando o texto de exibição (`tipoApoioDisplay.value`) em vez do valor de dados (`tipoApoioInput.value`), garantindo que o Google Forms reconheça a opção selecionada.
-
-Substitua o conteúdo completo do seu arquivo **`tela de chamados help/app.js`** por este código:
-
-```javascript
 // ====================================================================================
 // CONFIGURAÇÃO CHAVE DO PROJETO (SITE DE PEDIDOS)
 // ⚠️ SUBSTITUA OS PLACEHOLDERS PELOS SEUS VALORES REAIS DO GOOGLE FORMS AQUI ⚠️
@@ -75,7 +70,9 @@ if (companyLogoUrl) {
 // 1. Avançar para o formulário (Passo 1 -> Formulário)
 optionBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        tipoApoioInput.value = btn.dataset.value; tipoApoioDisplay.value = btn.textContent;
+        // Usa o data-value (em minúsculas) para o input hidden e o texto para a exibição
+        tipoApoioInput.value = btn.dataset.value; 
+        tipoApoioDisplay.value = btn.textContent;
         step1.classList.add('hidden'); 
         helpForm.classList.remove('hidden'); 
     });
@@ -115,7 +112,7 @@ deleteButton.addEventListener('click', () => {
     recordButton.disabled = false; deleteButton.disabled = true; stopButton.disabled = true;
 });
 
-// --- Lógica de Submissão para Google Forms (CORREÇÃO FINAL ROBUSTA) ---
+// --- Lógica de Submissão para Google Forms (CORREÇÃO FINAL ROBUSTA para CASE-SENSITIVE) ---
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -132,41 +129,43 @@ form.addEventListener('submit', (e) => {
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = name;
-        input.value = value;
+        // Garante que o valor enviado para o Forms é uma string em minúsculas
+        input.value = String(value).toLowerCase(); 
         tempForm.appendChild(input);
     };
 
     // 3. Coleta os dados e anexa ao formulário temporário
     
     // a. Dados básicos
-    // CORREÇÃO APLICADA AQUI: Envia o texto visível ('Médico') para o campo de múltipla escolha
-    appendHiddenInput(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioDisplay.value); 
+    // USA O tipoApoioInput.value, que é o data-value (em minúsculas)
+    appendHiddenInput(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioInput.value); 
     appendHiddenInput(FORM_ENTRY_IDS.LOCALIZACAO, localizacaoTextarea.value);
     appendHiddenInput(FORM_ENTRY_IDS.MOTIVO, form.motivo.value);
     appendHiddenInput(FORM_ENTRY_IDS.TELEFONE, form.telefone.value);
     
     // b. Deficiência (Valor esperado: 'sim' ou 'não')
     const deficiencia = deficienciaSim.checked ? 'sim' : 'não';
-    appendHiddenInput(FORM_ENTRY_IDS.DEFICIENCIA, deficiencia);
+    appendHiddenInput(FORM_ENTRY_IDS.DEFICIENCIA, deficiencia); // Já é minúsculo
 
     // c. Detalhes da Deficiência (Separados por vírgula)
     let defs = [];
     if (deficienciaSim.checked) {
-        // Coleta checkboxes
+        // Coleta checkboxes (que já estão em minúsculas no HTML)
         defs = Array.from(document.querySelectorAll('input[name="deficienciaDetalhe"]:checked')).map(cb => cb.value);
         // Adiciona "Outras" se preenchido
         const outrasDeficienciaInput = document.getElementById('outrasDeficiencia');
+        // A string final de detalhes também é forçada para minúsculas
         if (outrasDeficienciaInput && outrasDeficienciaInput.value) {
-            defs.push(`Outras: ${outrasDeficienciaInput.value}`);
+            defs.push(`Outras: ${outrasDeficienciaInput.value.toLowerCase()}`);
         }
     } else {
-        defs.push('Nenhuma');
+        defs.push('nenhuma'); // Envia 'nenhuma' em minúsculas
     }
-    // Envia como uma string única separada por vírgulas
+    // Envia como uma string única, já convertida para minúsculas se necessário.
     appendHiddenInput(FORM_ENTRY_IDS.DETALHES_DEFICIENCIA, defs.join(', '));
 
     // d. Flag de Áudio
-    const audioFlag = audioBlob ? 'ÁUDIO GRAVADO COM SUCESSO' : 'NÃO GRAVADO';
+    const audioFlag = audioBlob ? 'áudio gravado com sucesso' : 'não gravado'; // Valores forçados para minúsculas
     appendHiddenInput(FORM_ENTRY_IDS.AUDIO_FLAG, audioFlag);
 
     
@@ -195,4 +194,3 @@ form.addEventListener('submit', (e) => {
         confirmationMessage.classList.add('hidden'); 
     }, 5000);
 });
-```
