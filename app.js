@@ -1,11 +1,11 @@
 // ====================================================================================
 // CONFIGURAÇÃO CHAVE DO PROJETO (SITE DE PEDIDOS)
-// ⚠️ SUBSTITUA OS PLACEHOLDERS PELOS SEUS VALORES REAIS DO GOOGLE FORMS ⚠️
+// ⚠️ SUBSTITUA OS PLACEHOLDERS PELOS SEUS VALORES REAIS DO GOOGLE FORMS AQUI ⚠️
 // ====================================================================================
 // URL de Ação (JÁ COMPLETO)
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScnL18rvuEb9bshVPOWLatAY7llz8fCkWnz1APrcwmGcKGjEw/formResponse"; 
 
-// 2. Mapeamento DOS IDS ENCONTRADOS (JÁ COMPLETO)
+// 2. Mapeamento DOS IDS ENCONTRADOS (Se os seus IDs forem diferentes, altere aqui)
 const FORM_ENTRY_IDS = {
     TIPO_APOIO: 'entry.1944720991', 
     LOCALIZACAO: 'entry.1072432796',
@@ -65,7 +65,7 @@ if (companyLogoUrl) {
     headerLogo.appendChild(logoImg);
 }
 
-// --- EVENT LISTENERS DE NAVEGAÇÃO E LÓGICA (CORRIGIDO) ---
+// --- EVENT LISTENERS DE NAVEGAÇÃO E LÓGICA ---
 
 // 1. Avançar para o formulário (Passo 1 -> Formulário)
 optionBtns.forEach(btn => {
@@ -110,55 +110,82 @@ deleteButton.addEventListener('click', () => {
     recordButton.disabled = false; deleteButton.disabled = true; stopButton.disabled = true;
 });
 
-// --- Lógica de Submissão para Google Forms ---
+// --- Lógica de Submissão para Google Forms (CORREÇÃO FINAL ROBUSTA) ---
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const googleFormData = new FormData();
+    // 1. Cria o formulário temporário e aponta para o iframe
+    const tempForm = document.createElement('form');
+    tempForm.action = GOOGLE_FORM_ACTION_URL;
+    tempForm.method = 'POST';
+    tempForm.target = 'googleFormsIframe'; 
+    tempForm.style.display = 'none';
+
+    // 2. Função para criar e anexar os inputs hidden
+    const appendHiddenInput = (name, value) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        tempForm.appendChild(input);
+    };
+
+    // 3. Coleta os dados e anexa ao formulário temporário
     
-    // Mapeamento dos dados
-    googleFormData.append(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioInput.value);
-    googleFormData.append(FORM_ENTRY_IDS.LOCALIZACAO, localizacaoTextarea.value);
-    googleFormData.append(FORM_ENTRY_IDS.MOTIVO, form.motivo.value);
-    googleFormData.append(FORM_ENTRY_IDS.TELEFONE, form.telefone.value);
-    googleFormData.append(FORM_ENTRY_IDS.DEFICIENCIA, deficienciaSim.checked ? 'Sim' : 'Não');
+    // a. Dados básicos
+    appendHiddenInput(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioInput.value); 
+    appendHiddenInput(FORM_ENTRY_IDS.LOCALIZACAO, localizacaoTextarea.value);
+    appendHiddenInput(FORM_ENTRY_IDS.MOTIVO, form.motivo.value);
+    appendHiddenInput(FORM_ENTRY_IDS.TELEFONE, form.telefone.value);
     
+    // b. Deficiência (Valor esperado: 'sim' ou 'não')
+    const deficiencia = deficienciaSim.checked ? 'sim' : 'não';
+    appendHiddenInput(FORM_ENTRY_IDS.DEFICIENCIA, deficiencia);
+
+    // c. Detalhes da Deficiência (Separados por vírgula)
+    let defs = [];
     if (deficienciaSim.checked) {
-        let defs = Array.from(document.querySelectorAll('input[name="deficienciaDetalhe"]:checked')).map(cb => cb.value);
-        if (document.getElementById('outrasDeficiencia').value) {
-            defs.push(`Outras: ${document.getElementById('outrasDeficiencia').value}`);
+        // Coleta checkboxes
+        defs = Array.from(document.querySelectorAll('input[name="deficienciaDetalhe"]:checked')).map(cb => cb.value);
+        // Adiciona "Outras" se preenchido
+        const outrasDeficienciaInput = document.getElementById('outrasDeficiencia');
+        if (outrasDeficienciaInput && outrasDeficienciaInput.value) {
+            defs.push(`Outras: ${outrasDeficienciaInput.value}`);
         }
-        googleFormData.append(FORM_ENTRY_IDS.DETALHES_DEFICIENCIA, defs.join(', '));
     } else {
-        googleFormData.append(FORM_ENTRY_IDS.DETALHES_DEFICIENCIA, 'Nenhuma');
+        defs.push('Nenhuma');
     }
+    // Envia como uma string única separada por vírgulas
+    appendHiddenInput(FORM_ENTRY_IDS.DETALHES_DEFICIENCIA, defs.join(', '));
 
-    // Lógica CHAVE: Envia o sinal de áudio
+    // d. Flag de Áudio
+    const audioFlag = audioBlob ? 'ÁUDIO GRAVADO COM SUCESSO' : 'NÃO GRAVADO';
+    appendHiddenInput(FORM_ENTRY_IDS.AUDIO_FLAG, audioFlag);
+
+    
+    // 4. Submete: Anexa ao DOM, dispara o submit e remove imediatamente
+    document.body.appendChild(tempForm);
+    tempForm.submit(); 
+    document.body.removeChild(tempForm);
+
+    // 5. Feedback e limpeza
+    confirmationMessage.textContent = 'Seu pedido foi enviado com sucesso!';
+    confirmationMessage.className = 'success';
+    confirmationMessage.classList.remove('hidden');
+    
+    form.reset();
+    window.dispatchEvent(new Event('storage-update')); 
+    
+    // Limpar UI de áudio
     if (audioBlob) {
-        googleFormData.append(FORM_ENTRY_IDS.AUDIO_FLAG, 'ÁUDIO GRAVADO COM SUCESSO');
-    } else {
-        googleFormData.append(FORM_ENTRY_IDS.AUDIO_FLAG, 'NÃO GRAVADO');
+        audioBlob = null; audioStatus.textContent = ''; audioPlayer.src = ''; audioPlayerContainer.classList.add('hidden');
+        recordButton.disabled = false; deleteButton.disabled = true; stopButton.disabled = true;
     }
-
-    try {
-        const response = await fetch(GOOGLE_FORM_ACTION_URL, {
-            method: 'POST',
-            body: googleFormData,
-            mode: 'no-cors' 
-        });
-
-        confirmationMessage.textContent = 'Seu pedido foi enviado com sucesso!';
-        confirmationMessage.className = 'success';
-        confirmationMessage.classList.remove('hidden');
-        form.reset();
-        
-        // Dispara o evento para o Painel Gerenciamento atualizar
-        window.dispatchEvent(new Event('storage-update')); 
-
-    } catch (error) {
-        confirmationMessage.textContent = `Erro: Verifique sua conexão e se a URL do Forms está correta.`;
-        confirmationMessage.className = 'error';
-        confirmationMessage.classList.remove('hidden');
-    }
+    
+    setTimeout(() => {
+        helpForm.classList.add('hidden'); 
+        step1.classList.remove('hidden'); 
+        confirmationMessage.classList.add('hidden'); 
+    }, 5000);
 });
