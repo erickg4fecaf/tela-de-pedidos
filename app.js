@@ -1,3 +1,8 @@
+Com certeza\! Vou fornecer o código completo do `tela de chamados help/app.js` com a correção específica no envio do campo "Tipo de Apoio", usando o texto de exibição (`tipoApoioDisplay.value`) em vez do valor de dados (`tipoApoioInput.value`), garantindo que o Google Forms reconheça a opção selecionada.
+
+Substitua o conteúdo completo do seu arquivo **`tela de chamados help/app.js`** por este código:
+
+```javascript
 // ====================================================================================
 // CONFIGURAÇÃO CHAVE DO PROJETO (SITE DE PEDIDOS)
 // ⚠️ SUBSTITUA OS PLACEHOLDERS PELOS SEUS VALORES REAIS DO GOOGLE FORMS AQUI ⚠️
@@ -134,7 +139,8 @@ form.addEventListener('submit', (e) => {
     // 3. Coleta os dados e anexa ao formulário temporário
     
     // a. Dados básicos
-    appendHiddenInput(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioInput.value); 
+    // CORREÇÃO APLICADA AQUI: Envia o texto visível ('Médico') para o campo de múltipla escolha
+    appendHiddenInput(FORM_ENTRY_IDS.TIPO_APOIO, tipoApoioDisplay.value); 
     appendHiddenInput(FORM_ENTRY_IDS.LOCALIZACAO, localizacaoTextarea.value);
     appendHiddenInput(FORM_ENTRY_IDS.MOTIVO, form.motivo.value);
     appendHiddenInput(FORM_ENTRY_IDS.TELEFONE, form.telefone.value);
@@ -189,3 +195,4 @@ form.addEventListener('submit', (e) => {
         confirmationMessage.classList.add('hidden'); 
     }, 5000);
 });
+```
